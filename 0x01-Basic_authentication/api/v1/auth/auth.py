@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Module that creates a class to manage
 API authentication
