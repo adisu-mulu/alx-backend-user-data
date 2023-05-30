@@ -16,11 +16,13 @@ class Auth:
         """
         Returns False if path is in excluded_path
         """
+
         if path is None:
             return True
         if excluded_path is None or len(excluded_path) == 0:
             return True
         if path:
+            print(path)
             if path in excluded_path or path + '/' in excluded_path:
                 return False
             else:
@@ -30,6 +32,12 @@ class Auth:
         """
         Returns None or str accrding to request
         """
+        if not request:
+            return None
+        authorization = request.headers.get('Authorization')
+        print("authorization is {}".format(authorization))
+        if authorization:
+            return authorization
         return None
 
     def current_user(self, request=None) -> TypeVar('User'):
