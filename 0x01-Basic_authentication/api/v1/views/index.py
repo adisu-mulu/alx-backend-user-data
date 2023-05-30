@@ -32,3 +32,11 @@ def not_permitted() -> None:
     Handles an unathorized request
     """
     abort(401)
+
+
+@app_views.route('/forbidden', methods=['GET'], strict_slashes=False)
+def forbidden() -> None:
+    """
+    Handles a forbidden request
+    """
+    abort(403)
