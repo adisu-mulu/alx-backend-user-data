@@ -6,6 +6,7 @@ BasicAuth for REST API
 """
 from api.v1.auth.auth import Auth
 from typing import Optional
+import base64
 
 
 class BasicAuth(Auth):
@@ -27,3 +28,19 @@ class BasicAuth(Auth):
             return None
         else:
             return auth_list[1]
+
+    def decode_base64_authorization_header(
+            self, base64_authorization_header: str) -> Optional[str]:
+        """
+        Returns decoded value of Base64 string of
+        base64_authorization_header
+        """
+        if base64_authorization_header is None:
+            return None
+        if type(base64_authorization_header) != str:
+            return None
+        try:
+            decoded = base64.b64decode(base64_authorization_header)
+        except Exception as e:
+            return None
+        return decoded.decode(encoding='utf-8')
