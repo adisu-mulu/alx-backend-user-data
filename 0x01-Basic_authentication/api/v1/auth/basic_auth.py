@@ -36,15 +36,21 @@ class BasicAuth(Auth):
         Returns decoded value of Base64 string of
         base64_authorization_header
         """
+        print(base64_authorization_header)
         if base64_authorization_header is None:
             return None
         if type(base64_authorization_header) != str:
             return None
         try:
-            decoded = base64.b64decode(base64_authorization_header)
+            decoded = base64.b64decode(base64_authorization_header, validate=True)
+            print(decoded)
         except Exception as e:
             return None
-        return decoded.decode(encoding='utf-8')
+        try:
+            decoded = decoded.decode(encoding='utf-8')
+        except Exception as e:
+            return None
+        return decoded
 
     def extract_user_credentials(
             self,
@@ -77,8 +83,20 @@ class BasicAuth(Auth):
             return None
         users = User.search(attributes)
         if len(users) == 0:
+            # print("no such email found")
             return None
         for user in users:
             if user.is_valid_password(user_pwd):
                 return user
         return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """
+        Overloads Auth, and retrieves the User instance for a request
+        """
+        auth_header = self.authorization_header(request)
+        base_64_auth = self.extract_base64_authorization_header(auth_header)
+        decoded = self.decode_base64_authorization_header(base_64_auth)
+        user_cred = self.extract_user_credentials(decoded)
+        user = self.user_object_from_credentials(user_cred[0], user_cred[1])
+        return user
