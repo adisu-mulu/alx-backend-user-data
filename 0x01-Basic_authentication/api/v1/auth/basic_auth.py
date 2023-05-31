@@ -42,7 +42,7 @@ class BasicAuth(Auth):
         if type(base64_authorization_header) != str:
             return None
         try:
-            decoded = base64.b64decode(base64_authorization_header, validate=True)
+            decoded = base64.b64decode(base64_authorization_header)
             print(decoded)
         except Exception as e:
             return None
