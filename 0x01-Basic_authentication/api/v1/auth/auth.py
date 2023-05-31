@@ -4,7 +4,7 @@ Module that creates a class to manage
 API authentication
 """
 from flask import request
-from typing import List, TypeVar
+from typing import List, Optional, TypeVar
 
 
 class Auth:
@@ -22,20 +22,17 @@ class Auth:
         if excluded_path is None or len(excluded_path) == 0:
             return True
         if path:
-            print(path)
             if path in excluded_path or path + '/' in excluded_path:
                 return False
-            else:
-                return True
+        return True
 
-    def authorization_header(self, request=None) -> str:
+    def authorization_header(self, request=None) -> Optional[str]:
         """
         Returns None or str accrding to request
         """
         if not request:
             return None
         authorization = request.headers.get('Authorization')
-        print("authorization is {}".format(authorization))
         if authorization:
             return authorization
         return None
