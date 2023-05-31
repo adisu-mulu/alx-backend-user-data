@@ -5,6 +5,7 @@ API authentication
 """
 from flask import request
 from typing import List, Optional, TypeVar
+import re
 
 
 class Auth:
@@ -16,12 +17,17 @@ class Auth:
         """
         Returns False if path is in excluded_path
         """
-
         if path is None:
             return True
         if excluded_path is None or len(excluded_path) == 0:
             return True
         if path:
+            for exclude in excluded_path:
+                last_tag = exclude.split('/')[-1]
+                if last_tag.endswith('*'):
+                    last_tag = last_tag[0:-1]
+                    if last_tag in path:
+                        return False
             if path in excluded_path or path + '/' in excluded_path:
                 return False
         return True
