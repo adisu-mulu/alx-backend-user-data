@@ -5,7 +5,8 @@ inheriting from Auth and implementing
 BasicAuth for REST API
 """
 from api.v1.auth.auth import Auth
-from typing import Optional, Tuple
+from typing import Optional, Tuple, TypeVar
+from models.user import User
 import base64
 
 
@@ -61,3 +62,23 @@ class BasicAuth(Auth):
             return None, None
         user_cred = decoded_base64_authorization_header.split(':')
         return user_cred[0], user_cred[1]
+
+    def user_object_from_credentials(
+            self, user_email: str, user_pwd: str) -> Optional[TypeVar('User')]:
+        """
+        Returns user instance associated with user_email and user_pwd
+        """
+        if user_email is None or type(user_email) != str:
+            return None
+        if user_pwd is None or type(user_pwd) != str:
+            return None
+        attributes = {'email': user_email}
+        if User.count() == 0:
+            return None
+        users = User.search(attributes)
+        if len(users) == 0:
+            return None
+        for user in users:
+            if user.is_valid_password(user_pwd):
+                return user
+        return None
