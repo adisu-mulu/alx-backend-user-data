@@ -5,7 +5,7 @@ inheriting from Auth and implementing
 BasicAuth for REST API
 """
 from api.v1.auth.auth import Auth
-from typing import Optional
+from typing import Optional, Tuple
 import base64
 
 
@@ -44,3 +44,20 @@ class BasicAuth(Auth):
         except Exception as e:
             return None
         return decoded.decode(encoding='utf-8')
+
+    def extract_user_credentials(
+            self,
+            decoded_base64_authorization_header:
+            str) -> Tuple[Optional[str], Optional[str]]:
+        """
+        Returns user email and password from Base64 decoded value
+        (decoded_base64_authorization_header)
+        """
+        if decoded_base64_authorization_header is None:
+            return None, None
+        if type(decoded_base64_authorization_header) != str:
+            return None, None
+        if ':' not in decoded_base64_authorization_header:
+            return None, None
+        user_cred = decoded_base64_authorization_header.split(':')
+        return user_cred[0], user_cred[1]
