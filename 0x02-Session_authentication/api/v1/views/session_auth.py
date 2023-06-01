@@ -28,7 +28,7 @@ def get_user_for_session_auth():
             from api.v1.app import auth
             cookie = os.getenv('SESSION_NAME')
             session = auth.create_session(user.id)
-            resp = make_response(user.to_json())
+            resp = jsonify(user.to_json())
             resp.set_cookie(cookie, session)
             return resp
-    return jsonify({"error": "wrong password"})
+    return jsonify({"error": "wrong password"}), 401
