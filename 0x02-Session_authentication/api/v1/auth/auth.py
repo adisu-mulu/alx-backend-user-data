@@ -47,6 +47,7 @@ class Auth:
         """
         Returns None or User according to request
         """
+        print("should not be called")
         return None
 
     def session_cookie(self, request=None):
