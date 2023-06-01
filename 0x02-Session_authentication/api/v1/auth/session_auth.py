@@ -8,7 +8,7 @@ from api.v1.auth.auth import Auth
 from typing import Optional
 from uuid import uuid4
 from models.user import User
-from typing import TypeVar
+from typing import TypeVar, Optional
 
 
 class SessionAuth(Auth):
@@ -28,7 +28,7 @@ class SessionAuth(Auth):
         self.user_id_by_session_id[session_id] = user_id
         return session_id
 
-    def user_id_for_session_id(self, session_id: str = None) -> str:
+    def user_id_for_session_id(self, session_id: str = None) -> Optional[str]:
         """
         Returns a User ID based on a Session ID
         """
@@ -46,3 +46,20 @@ class SessionAuth(Auth):
         user_id = self.user_id_for_session_id(cookie)
         user = User.get(user_id)
         return user
+    
+    def destroy_session(self, request=None) -> bool:
+        """
+        Deletes the user session for logout functionality
+        """
+        if request is None:
+            return False
+        session_id = self.session_cookie(request)
+        if session_id is None:
+            return False
+        if self.user_id_for_session_id(session_id) is None:
+            return False
+        try:
+            del self.user_id_by_session_id['session_id']
+        except Exception as e:
+            pass
+        return True
