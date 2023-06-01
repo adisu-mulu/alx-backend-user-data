@@ -21,7 +21,7 @@ if auth:
         auth = SessionAuth()
     else:
         from api.v1.auth.auth import Auth
-        auth = Auth()   
+        auth = Auth()
 
 
 @app.errorhandler(404)
@@ -61,12 +61,14 @@ def auth_filter():
     elif not auth.require_auth(request.path, exclude_list):
         pass
     else:
-        if auth.authorization_header(request) is None:
+        if auth.authorization_header(request) is None\
+                and auth.session_cookie(request) is None:
             abort(401)
-        if auth.session_cookie(request) is None:
-            abort(401)
+        # if auth.session_cookie(request) is None:
+        #     abort(401)
         if auth.current_user(request) is None:
             abort(403)
+
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
