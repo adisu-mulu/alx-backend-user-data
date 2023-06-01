@@ -61,12 +61,12 @@ def auth_filter():
     elif not auth.require_auth(request.path, exclude_list):
         pass
     else:
-        if auth.current_user(request) is None:
-            abort(403)
         if auth.authorization_header(request) is None:
             abort(401)
         if auth.session_cookie(request) is None:
             abort(401)
+        if auth.current_user(request) is None:
+            abort(403)
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
