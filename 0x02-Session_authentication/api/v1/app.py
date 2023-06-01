@@ -52,6 +52,7 @@ def auth_filter():
     """
     exclude_list = ['/api/v1/status/', '/api/v1/unauthorized/',
                     '/api/v1/forbidden/']
+    request.current_user = auth.current_user(request)
     if auth is None:
         pass
     elif not auth.require_auth(request.path, exclude_list):
