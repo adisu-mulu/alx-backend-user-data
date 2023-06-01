@@ -7,6 +7,8 @@ Session Authentication
 from api.v1.auth.auth import Auth
 from typing import Optional
 from uuid import uuid4
+from models.user import User
+from typing import TypeVar
 
 
 class SessionAuth(Auth):
@@ -34,3 +36,13 @@ class SessionAuth(Auth):
             return None
         user_id = self.user_id_by_session_id.get(session_id)
         return user_id
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """
+        Returns a User based on a cookie value
+        """
+        cookie = self.session_cookie(request)
+        print(cookie)
+        user_id = self.user_id_for_session_id(cookie)
+        user = User.get(user_id)
+        return user
