@@ -15,6 +15,7 @@ class SessionAuth(Auth):
     implementation
     """
     user_id_by_session_id = {}
+
     def create_session(self, user_id: str = None) -> Optional[str]:
         """
         Creates a Session ID for a user_id
