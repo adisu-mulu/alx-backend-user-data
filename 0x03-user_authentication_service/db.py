@@ -63,7 +63,7 @@ class DB:
         """
         user = self.find_user_by(id=user_id)
         for key, val in kwargs.items():
-            if getattr(user, str(key), None) is None:
+            if getattr(user, str(key), 'None') == 'None':
                 raise ValueError
             setattr(user, str(key), val)
         self._session.commit()
